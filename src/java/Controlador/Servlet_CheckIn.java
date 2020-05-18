@@ -5,7 +5,10 @@
  */
 package Controlador;
 
+import Modelo.DTO_Pago;
+import Modelo.DTO_Persona;
 import Modelo.DTO_Reservacion;
+import Modelo.DTO_Rol;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -19,6 +22,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -91,18 +95,71 @@ public class Servlet_CheckIn extends HttpServlet {
             DAO_Habitacion objDataHabitacion = new DAO_Habitacion();
             DAO_Persona objDataPersona = new DAO_Persona();
 
-            boolean responseQuery = objDataReservacion.createReservacion(new DTO_Reservacion(0,
-                    objDataPersona.getPersona(cliente),
+            HttpSession sesion = request.getSession();
+            DTO_Rol rol = (DTO_Rol) sesion.getAttribute("rol");
+            DTO_Persona user = (cliente == null) ? (DTO_Persona) sesion.getAttribute("cliente") : objDataPersona.getPersona(cliente);
+
+            DTO_Reservacion objReservacion = new DTO_Reservacion(0,
+                    user,
                     objDataHabitacion.getHabitacion(habitacion),
                     fecha_ingreso,
-                    fecha_salida));
-            if(responseQuery) {
+                    fecha_salida);
+
+            int codigoReservacion = objDataReservacion.createReservacion(objReservacion);
+            objReservacion.setCodigo_reservacion(codigoReservacion);
+
+            if (codigoReservacion > 0) {
+
+                if (rol.getCodigo_rol() != 1) {
+                    DAO_Forma_pago objDataFormaPago = new DAO_Forma_pago();
+                    DAO_Pago objDataPago = new DAO_Pago();
+                    int paymentMethod = Integer.parseInt(request.getParameter("payment"));
+
+                    double amount = 0, helpAmount = 0;
+
+                    /* It's just for emergency */
+                    String[] cost = objReservacion.getHabitacion().getValor().split(" ");
+                    for (String element : cost) {
+                        String[] nextValue = element.split(",");
+                        for (String number : nextValue) {
+                            if (this.isNumeric(number)) {
+                                helpAmount = Double.parseDouble(number);
+                                if (helpAmount > 0) {
+                                    amount = (helpAmount * 0.3);
+                                }
+                            }
+                        }
+                    }
+                    System.out.println("Controlador.Servlet_CheckIn.doPost()" + amount);
+                    /* It's just for emergency */
+
+                    objDataPago.generatePayment(new DTO_Pago(
+                            0,
+                            objReservacion,
+                            objDataFormaPago.getPaymentMethod(paymentMethod),
+                            new Timestamp(System.currentTimeMillis()),
+                            "" + amount
+                    ));
+
+                }
                 response.sendRedirect("main/home.jsp");
             }
 
         } catch (ParseException | SQLException ex) {
             Logger.getLogger(Servlet_CheckIn.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 
     /**
