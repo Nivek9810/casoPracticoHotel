@@ -376,9 +376,11 @@
                                 <th>Genero</th>
                                 <th>Edad</th>
                                 <th>Correo Electrónico</th>
-                                <th>Telefono</th>
+                                <th>Telèfono</th>
                                 <th>Último acceso</th>
+                                <th>Editar</th>
                             </tr>
+
                         </thead>
 
                         <tbody>
@@ -411,6 +413,15 @@
                                 </td>
                                 <td>
                                     <% out.println(cliente.getLast_login());%>
+                                </td>
+                                <td>
+                                    <form class="col s12 register-form" action="../Servlet_Register" method="post">
+                                        <div class="input-field col s12">
+                                            <button class="btn waves-effect waves-light" type="submit" name="userId" value=<% out.println(cliente.getCodigo_persona().getGenero());%> >Editar
+                                                <i class="material-icons right">person</i>
+                                            </button>
+                                        </div>
+                                    </form>
                                 </td>
                             </tr>
                             <% }
