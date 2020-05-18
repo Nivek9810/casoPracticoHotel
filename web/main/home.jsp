@@ -4,6 +4,8 @@
     Author     : user
 --%>
 
+<%@page import="Controlador.DAO_Forma_pago"%>
+<%@page import="Modelo.DTO_Forma_pago"%>
 <%@page import="java.time.Period"%>
 <%@page import="java.time.LocalDate"%>
 <%@page import="java.time.format.DateTimeFormatter"%>
@@ -24,16 +26,26 @@
     ArrayList<DTO_Reservacion> listaReservaciones = null;
     ArrayList<DTO_Funcionario> listaClientes = null;
     ArrayList<DTO_Habitacion> listaHabitaciones = null;
+    ArrayList<DTO_Forma_pago> listaMetodosDePago = null;
     DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    if (rol.getCodigo_rol() == 1) {
-        DAO_Reservacion objDataReservacion = new DAO_Reservacion();
-        DAO_Funcionario objDataFuncionario = new DAO_Funcionario();
+    if (rol != null) {
         DAO_Habitacion objDataHabitacion = new DAO_Habitacion();
+        DAO_Reservacion objDataReservacion = new DAO_Reservacion();
 
-        listaReservaciones = objDataReservacion.getAllReservations();
-        listaClientes = objDataFuncionario.getAllFuncionarios(3);
         listaHabitaciones = objDataHabitacion.getAllRooms();
+
+        if (rol.getCodigo_rol() == 1) {
+            DAO_Funcionario objDataFuncionario = new DAO_Funcionario();
+
+            listaReservaciones = objDataReservacion.getAllReservations();
+            listaClientes = objDataFuncionario.getAllFuncionarios(3);
+        } else {
+            DAO_Forma_pago objDataMetodoPago = new DAO_Forma_pago();
+
+            listaReservaciones = objDataReservacion.getUserReservations(username.getCedula());
+            listaMetodosDePago = objDataMetodoPago.getAllPaymentMethods();
+        }
     }
 
     if (username == null) {
@@ -161,15 +173,18 @@
                             <div class="col s12 m8">
                                 <h5>Seleccionar un usuario</h5>
                                 <form class="col s12 register-form" action="../Servlet_CheckIn" method="post">
+                                    <% if (listaClientes != null && !listaClientes.isEmpty()) { %>
                                     <div class="input-field col s12 m6">
                                         <select name="cliente">
                                             <option value="0" disabled selected>Selecciona un cliente</option>
                                             <% for (DTO_Funcionario cliente : listaClientes) {%>
                                             <option value=<% out.println(cliente.getCodigo_persona().getCedula()); %>><% out.println(cliente.getCodigo_persona().getNombre()); %></option>
                                             <%}%>
+
                                         </select>
                                         <label>Selecciona un cliente</label>
                                     </div>
+                                    <%}%>
                                     <div class="input-field col s12 m6">
                                         <select name="habitacion">
                                             <option value="0" disabled selected>Selecciona una habitación</option>
@@ -179,6 +194,17 @@
                                         </select>
                                         <label>Selecciona una habitación</label>
                                     </div>
+                                    <% if (listaMetodosDePago != null && !listaMetodosDePago.isEmpty()) { %>
+                                    <div class="input-field col s12 m6">
+                                        <select name="payment">
+                                            <option value="0" disabled selected>Selecciona una habitación</option>
+                                            <% for (DTO_Forma_pago paymentMethod : listaMetodosDePago) {%>
+                                            <option value=<% out.println(paymentMethod.getCodigo_forma_pago()); %>><% out.println(paymentMethod.getNombre()); %></option>
+                                            <%}%>
+                                        </select>
+                                        <label>Selecciona una habitación</label>
+                                    </div>
+                                    <%}%>
                                     <div class="input-field col s12 m6">
                                         <input type="text" class="datepicker"  name="fecha_ingreso" placeholder="Fecha de ingreso">
                                     </div>
@@ -192,12 +218,14 @@
                                     </div>
                                 </form>
                             </div>
+                            <%if (rol.getCodigo_rol() == 1) {%>                                        
                             <div class="col s12 m4">
                                 <h5>Registro de usuario</h5>
                                 <a class="btn waves-effect waves-light" href="../register/register.jsp">Registrar usuario
                                     <i class="material-icons left">person_add</i>
                                 </a>
                             </div>
+                            <%}%>                                        
                         </div>
                     </div>
                 </div>
@@ -221,29 +249,29 @@
                         <tbody>
                             <%
                                 if (listaReservaciones != null && !listaReservaciones.isEmpty()) {
-                                    for (DTO_Reservacion reservacon : listaReservaciones) {
+                                    for (DTO_Reservacion reservacion : listaReservaciones) {
 
                             %>
                             <tr>
                                 <td>
-                                    <% out.println(reservacon.getCliente().getNombre());%>
+                                    <% out.println(reservacion.getCliente().getNombre());%>
                                 </td>
                                 <td>
-                                    <% out.println(reservacon.getHabitacion().getHotel().getNombre());%>
+                                    <% out.println(reservacion.getHabitacion().getHotel().getNombre());%>
                                 </td>
                                 <td>
-                                    <% out.println(reservacon.getHabitacion().getValor());%>
+                                    <% out.println(reservacion.getHabitacion().getValor());%>
                                 </td>
                                 <td>
-                                    <% out.println(reservacon.getFecha_ingreso());%>
+                                    <% out.println(reservacion.getFecha_ingreso());%>
                                 </td>
                                 <td>
-                                    <% out.println(reservacon.getFecha_salida());%>
+                                    <% out.println(reservacion.getFecha_salida());%>
                                 </td>
                                 <td>
                                     <form class="col s12 register-form" action="../Servlet_CheckOut" method="post">
                                         <div class="input-field col s12">
-                                            <button class="btn waves-effect waves-light" type="submit" name="reservation" value=<% out.println(reservacon.getCodigo_reservacion());%> >Pagar
+                                            <button class="btn waves-effect waves-light" type="submit" name="reservation" value=<% out.println(reservacion.getCodigo_reservacion());%> >Pagar
                                                 <i class="material-icons right">payment</i>
                                             </button>
                                         </div>

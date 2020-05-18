@@ -17,17 +17,17 @@ public class DTO_Pago {
     private DTO_Reservacion Reservacion;
     private DTO_Forma_pago Forma_pago;
     private Timestamp Fecha_pago;
-    private double Valor_de_pago;
+    private String Valor_de_pago;
 
     public DTO_Pago() {
         this.Codigo_pago = 0;
         this.Reservacion = new DTO_Reservacion();
         this.Forma_pago = new DTO_Forma_pago();
         this.Fecha_pago = null;
-        this.Valor_de_pago = 0;
+        this.Valor_de_pago = "";
     }
 
-    public DTO_Pago(int Codigo_pago, DTO_Reservacion Reservacion, DTO_Forma_pago Forma_pago, Timestamp Fecha_pago, double Valor_de_pago) {
+    public DTO_Pago(int Codigo_pago, DTO_Reservacion Reservacion, DTO_Forma_pago Forma_pago, Timestamp Fecha_pago, String Valor_de_pago) {
         this.Codigo_pago = Codigo_pago;
         this.Reservacion = Reservacion;
         this.Forma_pago = Forma_pago;
@@ -67,11 +67,11 @@ public class DTO_Pago {
         this.Fecha_pago = Fecha_pago;
     }
 
-    public double getValor_de_pago() {
+    public String getValor_de_pago() {
         return Valor_de_pago;
     }
 
-    public void setValor_de_pago(double Valor_de_pago) {
+    public void setValor_de_pago(String Valor_de_pago) {
         this.Valor_de_pago = Valor_de_pago;
     }
 

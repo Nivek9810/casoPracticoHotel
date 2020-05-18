@@ -49,12 +49,12 @@ public class DAO_Habitacion {
         String consulta = "SELECT * FROM " + this.TABLE + " WHERE codigo_habitacion =" + codigoHabitacion + ";";
         resultSet = statement.executeQuery(consulta);
         while (resultSet.next()) {
-            String value = resultSet.getString("valor");
+            //String value = resultSet.getString("valor");
             this.objHabitacion = new DTO_Habitacion(
                     resultSet.getInt("codigo_habitacion"),
                     this.objDataHotel.getHotel(resultSet.getInt("codigo_hotel")),
                     this.objDataTipoHabitacion.getTipoHabitacion(resultSet.getInt("codigo_tipo")),
-                    Double.parseDouble(value.substring(0, value.length() - 5)));
+                    resultSet.getString("valor"));
         }
         return this.objHabitacion;
     }
@@ -64,12 +64,12 @@ public class DAO_Habitacion {
         String consulta = "SELECT * FROM " + this.TABLE + ";";
         resultSet = statement.executeQuery(consulta);
         while (resultSet.next()) {
-            String value = resultSet.getString("valor");
+            //String value = resultSet.getString("valor");
             this.listaHabitaciones.add(new DTO_Habitacion(
                     resultSet.getInt("codigo_habitacion"),
                     this.objDataHotel.getHotel(resultSet.getInt("codigo_hotel")),
                     this.objDataTipoHabitacion.getTipoHabitacion(resultSet.getInt("codigo_tipo")),
-                    Double.parseDouble(value.substring(0, value.length() - 5))));
+                    resultSet.getString("valor")));
         }
         return this.listaHabitaciones;
     }

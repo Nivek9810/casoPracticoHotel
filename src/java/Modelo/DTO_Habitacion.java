@@ -14,16 +14,16 @@ public class DTO_Habitacion {
     private int Codigo_habitacion;
     private DTO_Hotel Hotel;
     private DTO_Tipo_habitacion Tipo;
-    private double Valor;
+    private String Valor;
 
     public DTO_Habitacion() {
         this.Codigo_habitacion = 0;
         this.Hotel = new DTO_Hotel();
         this.Tipo = new DTO_Tipo_habitacion();
-        this.Valor = 0;
+        this.Valor = "";
     }
 
-    public DTO_Habitacion(int Codigo_habitacion, DTO_Hotel Hotel, DTO_Tipo_habitacion Tipo, double Valor) {
+    public DTO_Habitacion(int Codigo_habitacion, DTO_Hotel Hotel, DTO_Tipo_habitacion Tipo, String Valor) {
         this.Codigo_habitacion = Codigo_habitacion;
         this.Hotel = Hotel;
         this.Tipo = Tipo;
@@ -54,11 +54,11 @@ public class DTO_Habitacion {
         this.Tipo = Tipo;
     }
 
-    public double getValor() {
+    public String getValor() {
         return Valor;
     }
 
-    public void setValor(double Valor) {
+    public void setValor(String Valor) {
         this.Valor = Valor;
     }
 
