@@ -1,0 +1,55 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 17/05/2020, 11:36:58 AM
+    Author     : user
+*/
+/** Index CSS*/
+.main-content {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+    margin: 4% 0px 8%;
+}
+
+.main-content > .card { 
+    width: 50vw;
+    min-width: 250px;
+    max-width: 500px;
+    align-self: center;
+    margin: auto;
+}
+
+.login-form {
+    height: 80%;
+    display: flex;
+    align-items: center;
+}
+
+nav { 
+    background-color: cornflowerblue;
+}
+
+.page-footer {
+    background-color: steelblue;
+}
+
+.btn {
+    background: cornflowerblue;
+    border-radius: 50px;
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1 0 auto;
+}
+
+/** @END: Index CSS */

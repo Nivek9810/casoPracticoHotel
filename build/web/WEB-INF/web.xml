@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <servlet>
+        <servlet-name>Login</servlet-name>
+        <servlet-class>Controlador.Login</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Servlet_CheckIn</servlet-name>
+        <servlet-class>Controlador.Servlet_CheckIn</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Servlet_Register</servlet-name>
+        <servlet-class>Controlador.Servlet_Register</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Servlet_CheckOut</servlet-name>
+        <servlet-class>Controlador.Servlet_CheckOut</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Login</servlet-name>
+        <url-pattern>/Login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Servlet_CheckIn</servlet-name>
+        <url-pattern>/Servlet_CheckIn</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Servlet_Register</servlet-name>
+        <url-pattern>/Servlet_Register</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Servlet_CheckOut</servlet-name>
+        <url-pattern>/Servlet_CheckOut</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+</web-app>
