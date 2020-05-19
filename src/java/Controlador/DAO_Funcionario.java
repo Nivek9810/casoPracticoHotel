@@ -56,11 +56,11 @@ public class DAO_Funcionario {
     }
 
     public ArrayList<DTO_Funcionario> getAllFuncionarios(int condition) throws SQLException {
-        this.lista_Funcionarios.clear();
+        ArrayList<DTO_Funcionario> lst_Funcionarios = new ArrayList<>();
         String consulta = "SELECT * FROM " + this.TABLE + " WHERE codigo_rol = " + condition + ";";
         resultSet = statement.executeQuery(consulta);
         while (resultSet.next()) {
-            this.lista_Funcionarios.add(new DTO_Funcionario(
+            lst_Funcionarios.add(new DTO_Funcionario(
                     this.objDataPersona.getPersona(
                             resultSet.getString("codigo_persona")),
                     this.objDataRol.getRol(resultSet.getInt("codigo_rol")),
@@ -68,7 +68,7 @@ public class DAO_Funcionario {
                     resultSet.getTimestamp("first_login"),
                     resultSet.getTimestamp("last_login")));
         }
-        return this.lista_Funcionarios;
+        return lst_Funcionarios;
     }
 
     public DTO_Funcionario getFuncionario(String cedula, String contrasena) throws SQLException {

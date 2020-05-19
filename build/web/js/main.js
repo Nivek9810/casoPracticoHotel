@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var instance = M.Tabs.init(tabs_1, {});
     var tabs_2 = document.querySelector('.tab-checkIn');
     var instance = M.Tabs.init(tabs_2, {});
+    var tabs_3 = document.querySelector('.tab-hotels');
+    var instance = M.Tabs.init(tabs_3, {});
+
 
     var date = new Date();
 

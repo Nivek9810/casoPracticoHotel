@@ -73,4 +73,20 @@ public class DAO_Habitacion {
         }
         return this.listaHabitaciones;
     }
+
+    public int createHabitacion(DTO_Habitacion objHabitacion) throws SQLException {
+        String consulta = "INSERT INTO " + TABLE + " (codigo_hotel, codigo_tipo, valor) VALUES "
+                + "(" + objHabitacion.getHotel().getCodigo_hotel() + ", "
+                + "" + objHabitacion.getTipo().getCodigo_tipo_habitacion() + ","
+                + "'" + objHabitacion.getValor() + "');";
+        int resp = statement.executeUpdate(consulta, Statement.RETURN_GENERATED_KEYS);
+        int habitacion_id = 0;
+        if (resp > 0) {
+            this.resultSet = this.statement.getGeneratedKeys();
+            while (this.resultSet.next()) {
+                habitacion_id = this.resultSet.getInt("codigo_habitacion");
+            }
+        }
+        return habitacion_id;
+    }
 }

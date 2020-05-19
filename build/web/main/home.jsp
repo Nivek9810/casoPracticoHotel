@@ -4,6 +4,12 @@
     Author     : user
 --%>
 
+<%@page import="Controlador.DAO_Tipo_habitacion"%>
+<%@page import="Modelo.DTO_Tipo_habitacion"%>
+<%@page import="Controlador.DAO_Hotel"%>
+<%@page import="Modelo.DTO_Hotel"%>
+<%@page import="Controlador.DAO_Ciudad"%>
+<%@page import="Modelo.DTO_Ciudad"%>
 <%@page import="java.sql.Connection"%>
 <%@page import="Modelo.Conexion"%>
 <%@page import="Controlador.DAO_Forma_pago"%>
@@ -27,6 +33,11 @@
     DTO_Rol rol = (DTO_Rol) sessionStatus.getAttribute("rol");
     ArrayList<DTO_Reservacion> listaReservaciones = null;
     ArrayList<DTO_Funcionario> listaClientes = null;
+    ArrayList<DTO_Funcionario> listaRepresentante = null;
+    ArrayList<DTO_Ciudad> listaCiudad = null;
+    ArrayList<DTO_Hotel> listaHoteles = null;
+    ArrayList<DTO_Tipo_habitacion> listaTipoHabitaciones = null;
+
     ArrayList<DTO_Habitacion> listaHabitaciones = null;
     ArrayList<DTO_Forma_pago> listaMetodosDePago = null;
     DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -41,10 +52,17 @@
         listaHabitaciones = objDataHabitacion.getAllRooms();
 
         if (rol.getCodigo_rol() == 1) {
+            DAO_Ciudad objDataCiudad = new DAO_Ciudad(conexion);
             DAO_Funcionario objDataFuncionario = new DAO_Funcionario(conexion);
+            DAO_Hotel objDataHoteles = new DAO_Hotel(conexion);
+            DAO_Tipo_habitacion objDataTipoHabitacion = new DAO_Tipo_habitacion(conexion);
 
             listaReservaciones = objDataReservacion.getAllReservations();
             listaClientes = objDataFuncionario.getAllFuncionarios(3);
+            listaRepresentante = objDataFuncionario.getAllFuncionarios(1);
+            listaCiudad = objDataCiudad.getAllPaymentMethods();
+            listaHoteles = objDataHoteles.getAllHotels();
+            listaTipoHabitaciones = objDataTipoHabitacion.getAllTypeRooms();
         } else {
             DAO_Forma_pago objDataMetodoPago = new DAO_Forma_pago(conexion);
 
@@ -79,11 +97,14 @@
             }
 
             .tab-checkIn > .tab > a,
-            .tab-checkIn > .tab > a.active{
+            .tab-checkIn > .tab > a.active,
+            .tab-hotels  > .tab > a,
+            .tab-hotels > .tab > a.active{
                 color: cornflowerblue !important;
                 background-color: transparent !important;
             }
-            .tab-checkIn > .indicator { 
+            .tab-checkIn > .indicator,
+            .tab-hotels > .indicator{ 
                 background: cornflowerblue !important;
             }
 
@@ -123,6 +144,7 @@
                     <li class="tab"><a href="#checkOut">Check out</a></li>
                     <li class="tab"><a href="#ratings">Calificaciones</a></li>
                     <li class="tab"><a href="#users">Clientes</a></li>
+                    <li class="tab"><a href="#hotels">Hoteles</a></li>
                 </ul>
             </div>
         </nav>
@@ -440,6 +462,123 @@
                             <%}%>
                         </tbody>
                     </table>
+                </section>
+
+            </div>
+            <!-- @HOTEL SECTION -->
+            <div id="hotels" class="col s12">
+                <section>
+                    <h3>Hoteles</h3>
+                    <ul class="tab-hotels tabs tabs-transparent">
+                        <li class="tab"><a class="active" href="#add-hotel">Registrar hotel</a></li>
+                        <li class="tab"><a href="#add-room">Registrar habitación</a></li>
+                    </ul>
+
+                    <form id="add-hotel" class="col s12 register-form" action="../Servlet_Hotel" method="post">
+                        <h4>Agregar hotel </h4>
+                        <div class="row">
+                            <div class="input-field col s12 m4">
+                                <% if (listaRepresentante != null && !listaRepresentante.isEmpty()) { %>
+                                <select name="chief">
+                                    <option value="0" disabled selected>Selecciona un representante</option>
+                                    <% for (DTO_Funcionario cliente : listaRepresentante) {%>
+                                    <option value=<% out.println(cliente.getCodigo_persona().getCedula()); %>><% out.println(cliente.getCodigo_persona().getNombre()); %></option>
+                                    <%}%>
+
+                                </select>
+                                <label>Selecciona un representante</label>
+                                <%}%>
+                            </div>
+                            <div class="input-field col s12 m4">
+                                <input id="name" type="text" class="validate" name="name"> 
+                                <label for="name">Nombre</label>
+                            </div>
+                            <div class="input-field col s12 m4">
+                                <input id="nit" type="number" class="validate" name="nit"> 
+                                <label for="nit">Nit</label>
+                            </div>
+                            <div class="input-field col s12 m6">
+                                <input id="phone" type="number" class="validate" name="phone"> 
+                                <label for="phone">Teléfono</label>
+                            </div>
+                            <div class="input-field col s12 m6">
+                                <input type="text" class="datepicker"  name="date_founded" placeholder="Fecha de creación">
+                            </div>
+                        </div>
+
+                        <h4>Información de la sucursal </h4>
+                        <div class="row">
+                            <div class="input-field col s12 m6">
+                                <% if (listaCiudad != null && !listaCiudad.isEmpty()) { %>
+                                <select name="city">
+                                    <option value="0" disabled selected>Selecciona una ciudad</option>
+                                    <% for (DTO_Ciudad ciudad : listaCiudad) {%>
+                                    <option value=<% out.println(ciudad.getCodigo_ciudad()); %>><% out.println(ciudad.getNombre()); %></option>
+                                    <%}%>
+
+                                </select>
+                                <label>Selecciona una ciudad</label>
+                                <%}%>
+                            </div>
+                            <div class="input-field col s12 m6">
+                                <input id="direction" type="text" class="validate" name="direction"> 
+                                <label for="direction">Dirección</label>
+                            </div>
+                            <div class="input-field col s12 m6">
+                                <input id="phone-sucursal" type="number" class="validate" name="phoneSucursal"> 
+                                <label for="phone-sucursal">Teléfono</label>
+                            </div>
+                            <div class="input-field col s12 m6">
+                                <input type="text" class="datepicker"  name="dateFoundedSucursal" placeholder="Fecha de creación">
+                            </div>
+                            <div class="input-field col s12">
+                                <button class="btn waves-effect waves-light" type="submit" name="action">Agregar
+                                    <i class="material-icons right">business</i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+
+                    <div id="add-room" class="row">
+                        <form id="add-hotel" class="col s12 register-form" action="../Servlet_Habitacion" method="post">
+
+                            <div class="input-field col s12 m6">
+                                <h5>Agregar habitación </h5>
+                                <% if (listaHoteles != null && !listaHoteles.isEmpty()) { %>
+                                <select name="hotel">
+                                    <option value="0" disabled selected>Selecciona un hotel</option>
+                                    <% for (DTO_Hotel hotel : listaHoteles) {%>
+                                    <option value=<% out.println(hotel.getCodigo_hotel()); %>><% out.println(hotel.getNombre()); %></option>
+                                    <%}%>
+
+                                </select>
+                                <label>Selecciona un hotel</label>
+                                <%}%>
+                            </div>
+                            <div class="input-field col s12 m6">
+                                <% if (listaTipoHabitaciones != null && !listaTipoHabitaciones.isEmpty()) { %>
+                                <select name="tipoHabitacion">
+                                    <option value="0" disabled selected>Selecciona un tipo de habitación</option>
+                                    <% for (DTO_Tipo_habitacion Tipo : listaTipoHabitaciones) {%>
+                                    <option value=<% out.println(Tipo.getCodigo_tipo_habitacion()); %>><% out.println(Tipo.getNombre()); %></option>
+                                    <%}%>
+
+                                </select>
+                                <label>Selecciona un tipo de habitación</label>
+                                <%}%>
+                            </div>
+                            <div class="input-field col s12 m6">
+                                <input id="cost-night" type="number" class="validate" name="costNight"> 
+                                <label for="cost-night">Valor</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <button class="btn waves-effect waves-light" type="submit" name="action">Añadir
+                                    <i class="material-icons right">hotel</i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </section>
 
             </div>

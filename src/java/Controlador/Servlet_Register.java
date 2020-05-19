@@ -113,10 +113,11 @@ public class Servlet_Register extends HttpServlet {
             String cedula = request.getParameter("cedula");
 
             DTO_Funcionario objCurrentFuncionario = objDataFuncionario.getFuncionarioByCedula(cedula);
+
             if (objCurrentFuncionario != null) {
                 if (objDataFuncionario.updateUser(objCurrentFuncionario)) {
                     if (objDataPersona.updatePerson(objCurrentFuncionario.getCodigo_persona())) {
-                        response.sendRedirect("home.jsp");
+                        response.sendRedirect("../main/home.jsp");
                     }
                 }
             } else {

@@ -27,6 +27,8 @@ public class DAO_Tipo_habitacion {
     private ResultSet resultSet;
     private Connection conection;
 
+    private final String TABLE = "TIPO_HABITACION";
+
     public DAO_Tipo_habitacion(Connection con) throws SQLException {
         this.listaTipoHabitaciones = new ArrayList<>();
         this.objTipoHabitacion = new DTO_Tipo_habitacion();
@@ -39,7 +41,7 @@ public class DAO_Tipo_habitacion {
     public DTO_Tipo_habitacion getTipoHabitacion(int codigoTipoHab) throws SQLException {
         this.objTipoHabitacion = null;
 
-        String consulta = "SELECT * FROM TIPO_HABITACION WHERE codigo_tipo_habitacion =" + codigoTipoHab + ";";
+        String consulta = "SELECT * FROM " + this.TABLE + " WHERE codigo_tipo_habitacion =" + codigoTipoHab + ";";
         resultSet = statement.executeQuery(consulta);
         while (resultSet.next()) {
             this.objTipoHabitacion = new DTO_Tipo_habitacion(
@@ -47,5 +49,17 @@ public class DAO_Tipo_habitacion {
                     resultSet.getString("Nombre"));
         }
         return this.objTipoHabitacion;
+    }
+
+    public ArrayList<DTO_Tipo_habitacion> getAllTypeRooms() throws SQLException {
+        this.listaTipoHabitaciones.clear();
+        String consulta = "SELECT * FROM " + this.TABLE + " ;";
+        resultSet = statement.executeQuery(consulta);
+        while (resultSet.next()) {
+            this.listaTipoHabitaciones.add(new DTO_Tipo_habitacion(
+                    resultSet.getInt("codigo_tipo_habitacion"),
+                    resultSet.getString("Nombre")));
+        }
+        return this.listaTipoHabitaciones;
     }
 }

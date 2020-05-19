@@ -63,7 +63,11 @@
     </head>
     <body>
         <div class="container">
-            <h3>Registra un usuario</h3>
+            <h3><% if (objFuncionario != null) {
+                    out.println("Modifica el usuario");
+                } else {
+                    out.println("Registra un usuario");
+                } %></h3>
             <form class="col s12 register-form" action="../Servlet_Register" method="post">
                 <div class="row">
                     <div class="input-field col s12 m6">
