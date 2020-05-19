@@ -5,16 +5,20 @@
  */
 package Controlador;
 
+import Modelo.Conexion;
 import Modelo.DTO_Funcionario;
 import Modelo.DTO_Genero;
 import Modelo.DTO_Persona;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -66,7 +70,23 @@ public class Servlet_Register extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
+        try {
+            Conexion con = new Conexion();
+            Connection conexion = con.getConnection();
+            DAO_Funcionario objDataFuncionario = new DAO_Funcionario(conexion);
+            /* Get parameters*/
+            String uid = request.getParameter("userId");
+
+            if (request.getParameter("userId") != null) {
+                request.setAttribute("editUser", objDataFuncionario.getFuncionarioByCedula(uid));
+
+                RequestDispatcher req = request.getRequestDispatcher("register/register.jsp");
+                req.forward(request, response);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Servlet_Register.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -81,53 +101,67 @@ public class Servlet_Register extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            DAO_Genero objDataGenre = new DAO_Genero();
-            DAO_Funcionario objDataFuncionario = new DAO_Funcionario();
-            DAO_Rol objDataRol = new DAO_Rol();
-            DAO_Persona objDataPersona = new DAO_Persona();
+            Conexion con = new Conexion();
+            Connection conexion = con.getConnection();
+
+            DAO_Funcionario objDataFuncionario = new DAO_Funcionario(conexion);
+            DAO_Persona objDataPersona = new DAO_Persona(conexion);
+            DAO_Genero objDataGenre = new DAO_Genero(conexion);
+            DAO_Rol objDataRol = new DAO_Rol(conexion);
             /* Get parameters*/
+
             String cedula = request.getParameter("cedula");
-            DTO_Genero genero = objDataGenre.getGenero(Integer.parseInt(request.getParameter("genero")));
-            String nombre = request.getParameter("name");
-            String apellido_padre = request.getParameter("last_name_father");
-            String apellido_madre = request.getParameter("last_name_mother");
-            java.util.Date tempDate = new SimpleDateFormat("dd/MM/yyyy").parse(request.getParameter("birthdate"));
-            Date birthdate = new Date(tempDate.getTime());
-            String correo = request.getParameter("email");
-            String telefono = request.getParameter("phone");
-            String contrasena = request.getParameter("password");
 
-            DTO_Persona objPersona = new DTO_Persona(
-                    cedula,
-                    genero,
-                    nombre,
-                    apellido_padre,
-                    apellido_madre,
-                    birthdate,
-                    correo,
-                    telefono);
+            DTO_Funcionario objCurrentFuncionario = objDataFuncionario.getFuncionarioByCedula(cedula);
+            if (objCurrentFuncionario != null) {
+                if (objDataFuncionario.updateUser(objCurrentFuncionario)) {
+                    if (objDataPersona.updatePerson(objCurrentFuncionario.getCodigo_persona())) {
+                        response.sendRedirect("home.jsp");
+                    }
+                }
+            } else {
+                DTO_Genero genero = objDataGenre.getGenero(Integer.parseInt(request.getParameter("genero")));
+                String nombre = request.getParameter("name");
+                String apellido_padre = request.getParameter("last_name_father");
+                String apellido_madre = request.getParameter("last_name_mother");
+                java.util.Date tempDate = new SimpleDateFormat("dd/MM/yyyy").parse(request.getParameter("birthdate"));
+                Date birthdate = new Date(tempDate.getTime());
+                String correo = request.getParameter("email");
+                String telefono = request.getParameter("phone");
+                String contrasena = request.getParameter("password");
 
-            boolean responseQuery = objDataPersona.createPerson(objPersona);
-            System.out.println("responseQuery" + responseQuery);
-            if (responseQuery) {
-                DTO_Funcionario objFuncionario = new DTO_Funcionario(
-                        objPersona,
-                        objDataRol.getRol(3),
-                        contrasena,
-                        new Timestamp(System.currentTimeMillis()),
-                        new Timestamp(System.currentTimeMillis())
-                );
-                if (objDataFuncionario.registerUser(objFuncionario)) {
-                    HttpSession sesion = request.getSession();
-                    DTO_Persona objCurrentSesion = (DTO_Persona) sesion.getAttribute("cliente");
-                    if (objCurrentSesion != null) {
-                        response.sendRedirect("main/home.jsp");
-                    } else {
-                        sesion.setAttribute("cliente", objFuncionario.getCodigo_persona());
-                        sesion.setAttribute("rol", objFuncionario.getRol());
-                        /*RequestDispatcher req = request.getRequestDispatcher("main/home.jsp");
+                DTO_Persona objPersona = new DTO_Persona(
+                        cedula,
+                        genero,
+                        nombre,
+                        apellido_padre,
+                        apellido_madre,
+                        birthdate,
+                        correo,
+                        telefono);
+
+                boolean responseQuery = objDataPersona.createPerson(objPersona);
+                System.out.println("responseQuery" + responseQuery);
+                if (responseQuery) {
+                    DTO_Funcionario objFuncionario = new DTO_Funcionario(
+                            objPersona,
+                            objDataRol.getRol(3),
+                            contrasena,
+                            new Timestamp(System.currentTimeMillis()),
+                            new Timestamp(System.currentTimeMillis())
+                    );
+                    if (objDataFuncionario.registerUser(objFuncionario)) {
+                        HttpSession sesion = request.getSession();
+                        DTO_Persona objCurrentSesion = (DTO_Persona) sesion.getAttribute("cliente");
+                        if (objCurrentSesion != null) {
+                            response.sendRedirect("main/home.jsp");
+                        } else {
+                            sesion.setAttribute("cliente", objFuncionario.getCodigo_persona());
+                            sesion.setAttribute("rol", objFuncionario.getRol());
+                            /*RequestDispatcher req = request.getRequestDispatcher("main/home.jsp");
                     req.include(request, response);*/
-                        response.sendRedirect("main/home.jsp");
+                            response.sendRedirect("main/home.jsp");
+                        }
                     }
                 }
             }

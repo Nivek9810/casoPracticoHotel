@@ -27,12 +27,12 @@ public class DAO_Rol {
     private ResultSet resultSet;
     private Connection conection;
 
-    public DAO_Rol() throws SQLException {
+    public DAO_Rol(Connection con) throws SQLException {
         this.listaRoles = new ArrayList<>();
         this.objRol = new DTO_Rol();
         this.statement = null;
-        this.con = new Conexion();
-        this.conection = con.getConnection();
+        this.con = null;
+        this.conection = con;
         this.statement = conection.createStatement();
     }
 

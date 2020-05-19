@@ -32,15 +32,15 @@ public class DAO_Reservacion {
 
     private final String TABLE = "RESERVACION";
 
-    public DAO_Reservacion() throws SQLException {
+    public DAO_Reservacion(Connection con) throws SQLException {
         this.listaReservaciones = new ArrayList<>();
         this.objReservacion = new DTO_Reservacion();
         this.statement = null;
         this.con = new Conexion();
-        this.conection = con.getConnection();
+        this.conection = con;
         this.statement = conection.createStatement();
-        this.objDataPersona = new DAO_Persona();
-        this.objDataHabitacion = new DAO_Habitacion();
+        this.objDataPersona = new DAO_Persona(con);
+        this.objDataHabitacion = new DAO_Habitacion(con);
     }
 
     public ArrayList<DTO_Reservacion> getAllReservations() throws SQLException {

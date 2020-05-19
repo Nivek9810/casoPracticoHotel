@@ -29,14 +29,14 @@ public class DAO_Persona {
 
     private DAO_Genero objDataGenero;
 
-    public DAO_Persona() throws SQLException {
+    public DAO_Persona(Connection con) throws SQLException {
         this.lista_Personas = new ArrayList<>();
         this.objPersona = new DTO_Persona();
         this.statement = null;
-        this.con = new Conexion();
-        this.conection = con.getConnection();
+        this.con = null;
+        this.conection = con;
         this.statement = conection.createStatement();
-        this.objDataGenero = new DAO_Genero();
+        this.objDataGenero = new DAO_Genero(con);
     }
 
     public DTO_Persona getPersona(String cedula) throws SQLException {
@@ -68,6 +68,20 @@ public class DAO_Persona {
                 + "'" + objPersona.getCorreo_electronico() + "',"
                 + "'" + objPersona.getTelefono() + "');";
         return !statement.execute(consulta);
+    }
+
+    public boolean updatePerson(DTO_Persona objPersona) throws SQLException {
+        String consulta = "UPDATE PERSONA SET "
+                + "codigo_genero = " + objPersona.getGenero().getCodigo_genero() + ", "
+                + "nombre = '" + objPersona.getNombre() + "', "
+                + "apellido_padre = '" + objPersona.getApellido_padre() + "', "
+                + "apellido_madre = '" + objPersona.getApellido_madre() + "', "
+                + "fecha_nacimiento = '" + objPersona.getFecha_nacimiento() + "',"
+                + "correo_electronico = '" + objPersona.getCorreo_electronico() + "', "
+                + "telefono = '" + objPersona.getTelefono() + "' "
+                + "WHERE cedula = '" + objPersona.getCedula() + "';";
+
+        return statement.executeUpdate(consulta) > 0;
     }
 
 }

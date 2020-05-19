@@ -29,12 +29,12 @@ public class DAO_Genero {
 
     private final String TABLE = "GENERO";
 
-    public DAO_Genero() throws SQLException {
+    public DAO_Genero(Connection con) throws SQLException {
         this.listaGeneros = new ArrayList<>();
         this.objGenero = new DTO_Genero();
         this.statement = null;
-        this.con = new Conexion();
-        this.conection = con.getConnection();
+        this.con = null;
+        this.conection = con;
         this.statement = conection.createStatement();
     }
 

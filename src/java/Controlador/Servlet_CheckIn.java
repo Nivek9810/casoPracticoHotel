@@ -5,12 +5,15 @@
  */
 package Controlador;
 
+import Modelo.Conexion;
 import Modelo.DTO_Pago;
 import Modelo.DTO_Persona;
 import Modelo.DTO_Reservacion;
 import Modelo.DTO_Rol;
+import Tools.MoneyChange;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -91,9 +94,13 @@ public class Servlet_CheckIn extends HttpServlet {
             Timestamp fecha_ingreso = new Timestamp(tempDateIngreso.getTime());
             Timestamp fecha_salida = new Timestamp(tempDateSalida.getTime());
 
-            DAO_Reservacion objDataReservacion = new DAO_Reservacion();
-            DAO_Habitacion objDataHabitacion = new DAO_Habitacion();
-            DAO_Persona objDataPersona = new DAO_Persona();
+            Conexion con = new Conexion();
+
+            Connection conexion = con.getConnection();
+
+            DAO_Reservacion objDataReservacion = new DAO_Reservacion(conexion);
+            DAO_Habitacion objDataHabitacion = new DAO_Habitacion(conexion);
+            DAO_Persona objDataPersona = new DAO_Persona(conexion);
 
             HttpSession sesion = request.getSession();
             DTO_Rol rol = (DTO_Rol) sesion.getAttribute("rol");
@@ -111,34 +118,18 @@ public class Servlet_CheckIn extends HttpServlet {
             if (codigoReservacion > 0) {
 
                 if (rol.getCodigo_rol() != 1) {
-                    DAO_Forma_pago objDataFormaPago = new DAO_Forma_pago();
-                    DAO_Pago objDataPago = new DAO_Pago();
+                    DAO_Forma_pago objDataFormaPago = new DAO_Forma_pago(conexion);
+                    DAO_Pago objDataPago = new DAO_Pago(conexion);
                     int paymentMethod = Integer.parseInt(request.getParameter("payment"));
 
-                    double amount = 0, helpAmount = 0;
-
-                    /* It's just for emergency */
-                    String[] cost = objReservacion.getHabitacion().getValor().split(" ");
-                    for (String element : cost) {
-                        String[] nextValue = element.split(",");
-                        for (String number : nextValue) {
-                            if (this.isNumeric(number)) {
-                                helpAmount = Double.parseDouble(number);
-                                if (helpAmount > 0) {
-                                    amount = (helpAmount * 0.3);
-                                }
-                            }
-                        }
-                    }
-                    System.out.println("Controlador.Servlet_CheckIn.doPost()" + amount);
-                    /* It's just for emergency */
+                    MoneyChange objMoneyChange = new MoneyChange();
 
                     objDataPago.generatePayment(new DTO_Pago(
                             0,
                             objReservacion,
                             objDataFormaPago.getPaymentMethod(paymentMethod),
                             new Timestamp(System.currentTimeMillis()),
-                            "" + amount
+                            "" + objMoneyChange.getAmoung(objReservacion.getHabitacion().getValor())
                     ));
 
                 }
@@ -148,18 +139,6 @@ public class Servlet_CheckIn extends HttpServlet {
         } catch (ParseException | SQLException ex) {
             Logger.getLogger(Servlet_CheckIn.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public boolean isNumeric(String strNum) {
-        if (strNum == null) {
-            return false;
-        }
-        try {
-            double d = Double.parseDouble(strNum);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
     }
 
     /**

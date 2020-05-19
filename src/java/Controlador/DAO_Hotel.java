@@ -30,14 +30,14 @@ public class DAO_Hotel {
 
     private DAO_Persona objDataPersona;
 
-    public DAO_Hotel() throws SQLException {
+    public DAO_Hotel(Connection con) throws SQLException {
         this.listaHoteles = new ArrayList<>();
         this.objHotel = new DTO_Hotel();
         this.statement = null;
-        this.con = new Conexion();
-        this.conection = con.getConnection();
+        this.con = null;
+        this.conection = con;
         this.statement = conection.createStatement();
-        this.objDataPersona = new DAO_Persona();
+        this.objDataPersona = new DAO_Persona(con);
     }
 
     public DTO_Hotel getHotel(int codigoHotel) throws SQLException {

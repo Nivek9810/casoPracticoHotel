@@ -32,15 +32,15 @@ public class DAO_Habitacion {
 
     private final String TABLE = "HABITACION";
 
-    public DAO_Habitacion() throws SQLException {
+    public DAO_Habitacion(Connection con) throws SQLException {
         this.listaHabitaciones = new ArrayList<>();
         this.objHabitacion = new DTO_Habitacion();
         this.statement = null;
-        this.con = new Conexion();
-        this.conection = con.getConnection();
+        this.con = null;
+        this.conection = con;
         this.statement = conection.createStatement();
-        this.objDataHotel = new DAO_Hotel();
-        this.objDataTipoHabitacion = new DAO_Tipo_habitacion();
+        this.objDataHotel = new DAO_Hotel(con);
+        this.objDataTipoHabitacion = new DAO_Tipo_habitacion(con);
     }
 
     public DTO_Habitacion getHabitacion(int codigoHabitacion) throws SQLException {

@@ -33,15 +33,15 @@ public class DAO_Funcionario {
 
     private final String TABLE = "FUNCIONARIO";
 
-    public DAO_Funcionario() throws SQLException {
+    public DAO_Funcionario(Connection con) throws SQLException {
         this.lista_Funcionarios = new ArrayList<>();
         this.objFuncionario = new DTO_Funcionario();
         this.statement = null;
-        this.con = new Conexion();
-        this.conection = con.getConnection();
+        this.con = null;
+        this.conection = con;
         this.statement = conection.createStatement();
-        this.objDataPersona = new DAO_Persona();
-        this.objDataRol = new DAO_Rol();
+        this.objDataPersona = new DAO_Persona(con);
+        this.objDataRol = new DAO_Rol(con);
     }
 
     public DAO_Funcionario(ArrayList<DTO_Funcionario> lista_Funcionarios, DTO_Funcionario objFuncionario, Statement statement, Conexion con, ResultSet resultSet, Connection conection, DAO_Persona objDataPersona, DAO_Rol objDataRol) {
@@ -87,6 +87,22 @@ public class DAO_Funcionario {
         return this.objFuncionario;
     }
 
+    public DTO_Funcionario getFuncionarioByCedula(String cedula) throws SQLException {
+        this.objFuncionario = null;
+
+        String consulta = "SELECT * FROM " + this.TABLE + " WHERE codigo_persona ='" + cedula + "';";
+        resultSet = statement.executeQuery(consulta);
+        while (resultSet.next()) {
+            this.objFuncionario = new DTO_Funcionario(
+                    this.objDataPersona.getPersona(resultSet.getString("codigo_persona")),
+                    this.objDataRol.getRol(resultSet.getInt("codigo_rol")),
+                    resultSet.getString("contrasena"),
+                    resultSet.getTimestamp("first_login"),
+                    resultSet.getTimestamp("last_login"));
+        }
+        return this.objFuncionario;
+    }
+
     public DTO_Funcionario userSesion(String cedula, String contrasena) throws SQLException {
         if (this.updateLastLoginDate(cedula)) {
             return this.getFuncionario(cedula, contrasena);
@@ -103,6 +119,17 @@ public class DAO_Funcionario {
                 + "'" + funcionario.getFirst_login() + "',"
                 + "'" + funcionario.getLast_login() + "');";
         return !statement.execute(consulta);
+    }
+
+    public boolean updateUser(DTO_Funcionario funcionario) throws SQLException {
+        String consulta = "UPDATE " + this.TABLE + " SET "
+                + "codigo_rol = " + funcionario.getRol().getCodigo_rol() + ", "
+                + "contrasena = '" + funcionario.getContrasena() + "', "
+                + "first_login = '" + funcionario.getFirst_login() + "', "
+                + "last_login = '" + funcionario.getLast_login() + "' "
+                + "WHERE codigo_persona = '" + funcionario.getCodigo_persona().getCedula() + "';";
+        int result = statement.executeUpdate(consulta);
+        return result > 0;
     }
 
     private boolean updateLastLoginDate(String cedula) throws SQLException {

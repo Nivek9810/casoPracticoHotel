@@ -5,8 +5,10 @@
  */
 package Controlador;
 
+import Modelo.Conexion;
 import Modelo.DTO_Funcionario;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -72,7 +74,10 @@ public class Login extends HttpServlet {
             req.forward(request, response);
         } else {
             try {
-                DAO_Funcionario objDataFuncionario = new DAO_Funcionario();
+                Conexion con = new Conexion();
+                Connection conexion = con.getConnection(); 
+                
+                DAO_Funcionario objDataFuncionario = new DAO_Funcionario(conexion);
                 DTO_Funcionario objFuncionario;
                 objFuncionario = objDataFuncionario.userSesion(username, password);
 

@@ -4,6 +4,8 @@
     Author     : user
 --%>
 
+<%@page import="java.sql.Connection"%>
+<%@page import="Modelo.Conexion"%>
 <%@page import="Controlador.DAO_Forma_pago"%>
 <%@page import="Modelo.DTO_Forma_pago"%>
 <%@page import="java.time.Period"%>
@@ -29,19 +31,22 @@
     ArrayList<DTO_Forma_pago> listaMetodosDePago = null;
     DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    Conexion con = new Conexion();
+    Connection conexion = con.getConnection();
+
     if (rol != null) {
-        DAO_Habitacion objDataHabitacion = new DAO_Habitacion();
-        DAO_Reservacion objDataReservacion = new DAO_Reservacion();
+        DAO_Habitacion objDataHabitacion = new DAO_Habitacion(conexion);
+        DAO_Reservacion objDataReservacion = new DAO_Reservacion(conexion);
 
         listaHabitaciones = objDataHabitacion.getAllRooms();
 
         if (rol.getCodigo_rol() == 1) {
-            DAO_Funcionario objDataFuncionario = new DAO_Funcionario();
+            DAO_Funcionario objDataFuncionario = new DAO_Funcionario(conexion);
 
             listaReservaciones = objDataReservacion.getAllReservations();
             listaClientes = objDataFuncionario.getAllFuncionarios(3);
         } else {
-            DAO_Forma_pago objDataMetodoPago = new DAO_Forma_pago();
+            DAO_Forma_pago objDataMetodoPago = new DAO_Forma_pago(conexion);
 
             listaReservaciones = objDataReservacion.getUserReservations(username.getCedula());
             listaMetodosDePago = objDataMetodoPago.getAllPaymentMethods();
@@ -197,12 +202,12 @@
                                     <% if (listaMetodosDePago != null && !listaMetodosDePago.isEmpty()) { %>
                                     <div class="input-field col s12 m6">
                                         <select name="payment">
-                                            <option value="0" disabled selected>Selecciona una habitación</option>
+                                            <option value="0" disabled selected>Selecciona una opción</option>
                                             <% for (DTO_Forma_pago paymentMethod : listaMetodosDePago) {%>
                                             <option value=<% out.println(paymentMethod.getCodigo_forma_pago()); %>><% out.println(paymentMethod.getNombre()); %></option>
                                             <%}%>
                                         </select>
-                                        <label>Selecciona una habitación</label>
+                                        <label>Selecciona un método de pago</label>
                                     </div>
                                     <%}%>
                                     <div class="input-field col s12 m6">
@@ -271,7 +276,7 @@
                                 <td>
                                     <form class="col s12 register-form" action="../Servlet_CheckOut" method="post">
                                         <div class="input-field col s12">
-                                            <button class="btn waves-effect waves-light" type="submit" name="reservation" value=<% out.println(reservacion.getCodigo_reservacion());%> >Pagar
+                                            <button onclick="M.toast({html: 'Estamos procesando su solicitud...', classes: 'rounded'})" class="btn waves-effect waves-light" type="submit" name="reservation" value=<% out.println(reservacion.getCodigo_reservacion());%> >Pagar
                                                 <i class="material-icons right">payment</i>
                                             </button>
                                         </div>
@@ -415,9 +420,9 @@
                                     <% out.println(cliente.getLast_login());%>
                                 </td>
                                 <td>
-                                    <form class="col s12 register-form" action="../Servlet_Register" method="post">
+                                    <form class="col s12 register-form" action="../Servlet_Register" method="get">
                                         <div class="input-field col s12">
-                                            <button class="btn waves-effect waves-light" type="submit" name="userId" value=<% out.println(cliente.getCodigo_persona().getGenero());%> >Editar
+                                            <button class="btn waves-effect waves-light" type="submit" name="userId" value=<% out.println(cliente.getCodigo_persona().getCedula());%> >Editar
                                                 <i class="material-icons right">person</i>
                                             </button>
                                         </div>

@@ -32,15 +32,15 @@ public class DAO_Pago {
 
     private final String TABLE = "PAGO";
 
-    public DAO_Pago() throws SQLException {
+    public DAO_Pago(Connection con) throws SQLException {
         this.listaPagos = new ArrayList<>();
         this.objPago = new DTO_Pago();
         this.statement = null;
-        this.con = new Conexion();
-        this.conection = con.getConnection();
+        this.con = null;
+        this.conection = con;
         this.statement = conection.createStatement();
-        this.objDataReservacion = new DAO_Reservacion();
-        this.objDataFormaPago = new DAO_Forma_pago();
+        this.objDataReservacion = new DAO_Reservacion(con);
+        this.objDataFormaPago = new DAO_Forma_pago(con);
     }
 
     public DTO_Pago getPayment(int codigo) throws SQLException {
@@ -66,5 +66,20 @@ public class DAO_Pago {
                 + "'" + payment.getFecha_pago() + "',"
                 + "'" + payment.getValor_de_pago() + "');";
         return !statement.execute(consulta);
+    }
+
+    public DTO_Pago checkUserPayment(int codigo) throws SQLException {
+        this.objPago = null;
+
+        String consulta = "SELECT * FROM " + this.TABLE + " WHERE codigo_reservacion=" + codigo + ";";
+        resultSet = statement.executeQuery(consulta);
+        while (resultSet.next()) {
+            this.objPago = new DTO_Pago(resultSet.getInt("codigo_pago"),
+                    this.objDataReservacion.getReservation(resultSet.getInt("codigo_reservacion")),
+                    this.objDataFormaPago.getPaymentMethod(resultSet.getInt("codigo_forma_pago")),
+                    resultSet.getTimestamp("fecha_pago"),
+                    resultSet.getString("valor_de_pago"));
+        }
+        return this.objPago;
     }
 }

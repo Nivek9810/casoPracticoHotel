@@ -29,12 +29,12 @@ public class DAO_Forma_pago {
 
     private final String TABLE = "FORMA_DE_PAGO";
 
-    public DAO_Forma_pago() throws SQLException {
+    public DAO_Forma_pago(Connection con) throws SQLException {
         this.listaFormaPagos = new ArrayList<>();
         this.objFormaPago = new DTO_Forma_pago();
         this.statement = null;
         this.con = new Conexion();
-        this.conection = con.getConnection();
+        this.conection = con;
         this.statement = conection.createStatement();
     }
 
