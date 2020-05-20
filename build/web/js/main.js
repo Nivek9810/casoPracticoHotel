@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var picker = document.querySelectorAll('.datepicker');
     var instancesPick = M.Datepicker.init(picker, {
         "defaultTime": (new Date(date.setDate(date.getDate() - (365 * 18)))),
-        format: "dd/mm/yyyy"
+        format: "yyyy-mm-dd"
     });
 });
 

@@ -114,43 +114,19 @@ public class Servlet_Register extends HttpServlet {
 
             DTO_Funcionario objCurrentFuncionario = objDataFuncionario.getFuncionarioByCedula(cedula);
 
+            DTO_Persona objPersona = this.getPersona(request, objDataGenre, cedula);
+            DTO_Funcionario objFuncionario = this.getFuncionario(request, objPersona, objDataRol);
+
             if (objCurrentFuncionario != null) {
-                if (objDataFuncionario.updateUser(objCurrentFuncionario)) {
-                    if (objDataPersona.updatePerson(objCurrentFuncionario.getCodigo_persona())) {
-                        response.sendRedirect("../main/home.jsp");
+                if (objDataFuncionario.updateUser(objFuncionario)) {
+
+                    if (objDataPersona.updatePerson(objPersona)) {
+                        response.sendRedirect("main/home.jsp");
                     }
                 }
             } else {
-                DTO_Genero genero = objDataGenre.getGenero(Integer.parseInt(request.getParameter("genero")));
-                String nombre = request.getParameter("name");
-                String apellido_padre = request.getParameter("last_name_father");
-                String apellido_madre = request.getParameter("last_name_mother");
-                java.util.Date tempDate = new SimpleDateFormat("dd/MM/yyyy").parse(request.getParameter("birthdate"));
-                Date birthdate = new Date(tempDate.getTime());
-                String correo = request.getParameter("email");
-                String telefono = request.getParameter("phone");
-                String contrasena = request.getParameter("password");
-
-                DTO_Persona objPersona = new DTO_Persona(
-                        cedula,
-                        genero,
-                        nombre,
-                        apellido_padre,
-                        apellido_madre,
-                        birthdate,
-                        correo,
-                        telefono);
-
                 boolean responseQuery = objDataPersona.createPerson(objPersona);
-                System.out.println("responseQuery" + responseQuery);
                 if (responseQuery) {
-                    DTO_Funcionario objFuncionario = new DTO_Funcionario(
-                            objPersona,
-                            objDataRol.getRol(3),
-                            contrasena,
-                            new Timestamp(System.currentTimeMillis()),
-                            new Timestamp(System.currentTimeMillis())
-                    );
                     if (objDataFuncionario.registerUser(objFuncionario)) {
                         HttpSession sesion = request.getSession();
                         DTO_Persona objCurrentSesion = (DTO_Persona) sesion.getAttribute("cliente");
@@ -185,4 +161,36 @@ public class Servlet_Register extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    private DTO_Persona getPersona(HttpServletRequest request, DAO_Genero objDataGenre, String cedula) throws ParseException, SQLException {
+        DTO_Genero genero = objDataGenre.getGenero(Integer.parseInt(request.getParameter("genero")));
+        String nombre = request.getParameter("name");
+        String apellido_padre = request.getParameter("last_name_father");
+        String apellido_madre = request.getParameter("last_name_mother");
+        java.util.Date tempDate = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("birthdate"));
+        Date birthdate = new Date(tempDate.getTime());
+        String correo = request.getParameter("email");
+        String telefono = request.getParameter("phone");
+
+        return new DTO_Persona(
+                cedula,
+                genero,
+                nombre,
+                apellido_padre,
+                apellido_madre,
+                birthdate,
+                correo,
+                telefono);
+    }
+
+    private DTO_Funcionario getFuncionario(HttpServletRequest request, DTO_Persona objPersona, DAO_Rol objDataRol) throws SQLException {
+        String contrasena = request.getParameter("password");
+
+        return new DTO_Funcionario(
+                objPersona,
+                objDataRol.getRol(3),
+                contrasena,
+                new Timestamp(System.currentTimeMillis()),
+                new Timestamp(System.currentTimeMillis())
+        );
+    }
 }

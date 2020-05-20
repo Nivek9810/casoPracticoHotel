@@ -58,8 +58,8 @@
             DAO_Tipo_habitacion objDataTipoHabitacion = new DAO_Tipo_habitacion(conexion);
 
             listaReservaciones = objDataReservacion.getAllReservations();
-            listaClientes = objDataFuncionario.getAllFuncionarios(3);
             listaRepresentante = objDataFuncionario.getAllFuncionarios(1);
+            listaClientes = objDataFuncionario.getAllFuncionarios(3);
             listaCiudad = objDataCiudad.getAllPaymentMethods();
             listaHoteles = objDataHoteles.getAllHotels();
             listaTipoHabitaciones = objDataTipoHabitacion.getAllTypeRooms();
@@ -233,10 +233,10 @@
                                     </div>
                                     <%}%>
                                     <div class="input-field col s12 m6">
-                                        <input type="text" class="datepicker"  name="fecha_ingreso" placeholder="Fecha de ingreso">
+                                        <input type="text" class="datepicker"  name="fecha_ingreso" placeholder="Fecha de ingreso" required="true">
                                     </div>
                                     <div class="input-field col s12 m6">
-                                        <input type="text" class="datepicker"  name="fecha_salida" placeholder="Fecha de salida">
+                                        <input type="text" class="datepicker"  name="fecha_salida" placeholder="Fecha de salida" required="true">
                                     </div>
                                     <div class="input-field col s12">
                                         <button class="btn waves-effect waves-light" type="submit"  value="Login" name="action">Reservar
@@ -490,19 +490,19 @@
                                 <%}%>
                             </div>
                             <div class="input-field col s12 m4">
-                                <input id="name" type="text" class="validate" name="name"> 
-                                <label for="name">Nombre</label>
+                                <input type="text" class="datepicker"  name="date_founded" placeholder="Fecha de creación" required="true">
                             </div>
                             <div class="input-field col s12 m4">
-                                <input id="nit" type="number" class="validate" name="nit"> 
+                                <input id="nit" type="number" class="validate" name="nit" required="true"> 
                                 <label for="nit">Nit</label>
                             </div>
                             <div class="input-field col s12 m6">
-                                <input id="phone" type="number" class="validate" name="phone"> 
-                                <label for="phone">Teléfono</label>
+                                <input id="name" type="text" class="validate" name="name" required="true"> 
+                                <label for="name">Nombre</label>
                             </div>
                             <div class="input-field col s12 m6">
-                                <input type="text" class="datepicker"  name="date_founded" placeholder="Fecha de creación">
+                                <input id="phone" type="number" class="validate" name="phone" required="true"> 
+                                <label for="phone">Teléfono</label>
                             </div>
                         </div>
 
@@ -521,15 +521,15 @@
                                 <%}%>
                             </div>
                             <div class="input-field col s12 m6">
-                                <input id="direction" type="text" class="validate" name="direction"> 
+                                <input id="direction" type="text" class="validate" name="direction" required="true"> 
                                 <label for="direction">Dirección</label>
                             </div>
                             <div class="input-field col s12 m6">
-                                <input id="phone-sucursal" type="number" class="validate" name="phoneSucursal"> 
+                                <input id="phone-sucursal" type="number" class="validate" name="phoneSucursal" required="true"> 
                                 <label for="phone-sucursal">Teléfono</label>
                             </div>
                             <div class="input-field col s12 m6">
-                                <input type="text" class="datepicker"  name="dateFoundedSucursal" placeholder="Fecha de creación">
+                                <input type="text" class="datepicker"  name="dateFoundedSucursal" placeholder="Fecha de creación" required="true">
                             </div>
                             <div class="input-field col s12">
                                 <button class="btn waves-effect waves-light" type="submit" name="action">Agregar
@@ -543,10 +543,12 @@
                     <div id="add-room" class="row">
                         <form id="add-hotel" class="col s12 register-form" action="../Servlet_Habitacion" method="post">
 
-                            <div class="input-field col s12 m6">
+                            <div class="col s12">
                                 <h5>Agregar habitación </h5>
+                            </div>
+                            <div class="input-field col s12 m6">
                                 <% if (listaHoteles != null && !listaHoteles.isEmpty()) { %>
-                                <select name="hotel">
+                                <select name="hotel" required="true">
                                     <option value="0" disabled selected>Selecciona un hotel</option>
                                     <% for (DTO_Hotel hotel : listaHoteles) {%>
                                     <option value=<% out.println(hotel.getCodigo_hotel()); %>><% out.println(hotel.getNombre()); %></option>
@@ -558,7 +560,7 @@
                             </div>
                             <div class="input-field col s12 m6">
                                 <% if (listaTipoHabitaciones != null && !listaTipoHabitaciones.isEmpty()) { %>
-                                <select name="tipoHabitacion">
+                                <select name="tipoHabitacion" required="true">
                                     <option value="0" disabled selected>Selecciona un tipo de habitación</option>
                                     <% for (DTO_Tipo_habitacion Tipo : listaTipoHabitaciones) {%>
                                     <option value=<% out.println(Tipo.getCodigo_tipo_habitacion()); %>><% out.println(Tipo.getNombre()); %></option>
@@ -569,7 +571,7 @@
                                 <%}%>
                             </div>
                             <div class="input-field col s12 m6">
-                                <input id="cost-night" type="number" class="validate" name="costNight"> 
+                                <input id="cost-night" type="number" class="validate" name="costNight" required="true"> 
                                 <label for="cost-night">Valor</label>
                             </div>
                             <div class="input-field col s12">

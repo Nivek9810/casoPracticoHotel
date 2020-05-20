@@ -89,8 +89,8 @@ public class Servlet_CheckIn extends HttpServlet {
         try {
             String cliente = request.getParameter("cliente");
             int habitacion = Integer.parseInt(request.getParameter("habitacion"));
-            Date tempDateIngreso = new SimpleDateFormat("dd/MM/yyyy").parse(request.getParameter("fecha_ingreso"));
-            Date tempDateSalida = new SimpleDateFormat("dd/MM/yyyy").parse(request.getParameter("fecha_salida"));
+            Date tempDateIngreso = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("fecha_ingreso"));
+            Date tempDateSalida = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("fecha_salida"));
             Timestamp fecha_ingreso = new Timestamp(tempDateIngreso.getTime());
             Timestamp fecha_salida = new Timestamp(tempDateSalida.getTime());
 

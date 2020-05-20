@@ -92,14 +92,14 @@ public class Servlet_Hotel extends HttpServlet {
             String nit = request.getParameter("nit");
             String phone = request.getParameter("phone");
 
-            java.util.Date tempDate = new SimpleDateFormat("dd/MM/yyyy").parse(request.getParameter("date_founded"));
+            java.util.Date tempDate = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("date_founded"));
             Timestamp date_founded = new Timestamp(tempDate.getTime());
 
             String city = request.getParameter("city");
             String direction = request.getParameter("direction");
             String phoneSucursal = request.getParameter("phoneSucursal");
 
-            java.util.Date tempDate2 = new SimpleDateFormat("dd/MM/yyyy").parse(request.getParameter("dateFoundedSucursal"));
+            java.util.Date tempDate2 = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("dateFoundedSucursal"));
             Date dateFoundedSucursal = new Date(tempDate2.getTime());
 
             DAO_Hotel objDataHotel = new DAO_Hotel(conexion);

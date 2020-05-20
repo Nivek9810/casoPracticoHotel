@@ -52,11 +52,11 @@
                             <form class="col s12 login-form" action="Login" method="post">
                                 <div class="row">
                                     <div class="input-field col s12 m6">
-                                        <input id="username" type="number" class="validate" name="username" >
+                                        <input id="username" type="number" class="validate" name="username" required="true">
                                         <label for="username">Usuario</label>
                                     </div>
                                     <div class="input-field col s12 m6">
-                                        <input id="password" type="password" class="validate" name="password"> 
+                                        <input id="password" type="password" class="validate" name="password" required="true"> 
                                         <label for="password">Contraseña</label>
                                     </div>
                                     <div class="input-field col s12" style="text-align: -webkit-center;">

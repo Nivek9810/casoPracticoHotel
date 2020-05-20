@@ -56,7 +56,7 @@
                 var picker = document.querySelectorAll('.datepicker');
                 var instancesPick = M.Datepicker.init(picker, {
                     "defaultTime": (new Date(date.setDate(date.getDate() - (365 * 18)))),
-                    format: "dd/mm/yyyy"
+                    format: "yyyy-mm-dd"
                 });
             });
         </script>
@@ -68,17 +68,21 @@
                 } else {
                     out.println("Registra un usuario");
                 } %></h3>
-            <form class="col s12 register-form" action="../Servlet_Register" method="post">
+            <form class="col s12 register-form" method="post" action=<% if (objFuncionario != null) {
+                    out.println("Servlet_Register");
+                } else {
+                    out.println("../Servlet_Register");
+                } %>>
                 <div class="row">
                     <div class="input-field col s12 m6">
-                        <input id="cedula" type="number" class="validate" name="cedula"  value=<% if (objFuncionario != null) {
-                                out.println(objFuncionario.getCodigo_persona().getCedula());
-                            } %>>
+                        <input id="cedula" type="number" class="validate" name="cedula"  required="true" value=<% if (objFuncionario != null) {
+                                    out.println(objFuncionario.getCodigo_persona().getCedula());
+                                } %>>
                         <label for="cedula">Número de documento:</label>
                     </div>
 
                     <div class="input-field col s12 m6">
-                        <select name="genero" value=<% if (objFuncionario != null) {
+                        <select name="genero" required="true" value=<% if (objFuncionario != null) {
                                 out.println(objFuncionario.getCodigo_persona().getGenero().getCodigo_genero());
                             } %>>
                             <option value="0" disabled selected>Selecciona un genero</option>
@@ -89,49 +93,54 @@
                         <label>Selecciona un genero</label>
                     </div>
                     <div class="input-field col s12 m4">
-                        <input id="name" type="text" class="validate" name="name" value=<% if (objFuncionario != null) {
+                        <input id="name" type="text" class="validate" name="name" required="true" value=<% if (objFuncionario != null) {
                                 out.println(objFuncionario.getCodigo_persona().getNombre());
                             } %>>
                         <label for="name">Nombre</label>
                     </div>
                     <div class="input-field col s12 m4">
-                        <input id="last_name_father" type="text" class="validate" name="last_name_father" value=<% if (objFuncionario != null) {
+                        <input id="last_name_father" type="text" class="validate" name="last_name_father" required="true" value=<% if (objFuncionario != null) {
                                 out.println(objFuncionario.getCodigo_persona().getApellido_padre());
                             } %>> 
                         <label for="last_name_father">Primer apellido</label>
                     </div>
                     <div class="input-field col s12 m4">
-                        <input id="last_name_mother" type="text" class="validate" name="last_name_mother" value=<% if (objFuncionario != null) {
+                        <input id="last_name_mother" type="text" class="validate" name="last_name_mother" required="true" value=<% if (objFuncionario != null) {
                                 out.println(objFuncionario.getCodigo_persona().getApellido_madre());
                             } %>> 
                         <label for="last_name_mother">Segundo apellido</label>
                     </div>
                     <div class="input-field col s12 m6">
-                        <input type="text" class="datepicker"  name="birthdate" placeholder="Fecha de nacimiento" value=<% if (objFuncionario != null) {
+                        <input type="text" class="datepicker"  name="birthdate" placeholder="Fecha de nacimiento" required="true" value=<% if (objFuncionario != null) {
                                 out.println(objFuncionario.getCodigo_persona().getFecha_nacimiento());
                             } %>>
                     </div>
                     <div class="input-field col s12 m6">
-                        <input id="email" type="email" class="validate" name="email" value=<% if (objFuncionario != null) {
+                        <input id="email" type="email" class="validate" name="email" required="true" value=<% if (objFuncionario != null) {
                                 out.println(objFuncionario.getCodigo_persona().getCorreo_electronico());
                             } %>> 
                         <label for="email">Correo electrónico</label>
                     </div>
 
                     <div class="input-field col s12 m6">
-                        <input id="phone" type="number" class="validate" name="phone" value=<% if (objFuncionario != null) {
+                        <input id="phone" type="number" class="validate" name="phone" required="true" value=<% if (objFuncionario != null) {
                                 out.println(objFuncionario.getCodigo_persona().getTelefono());
                             } %>> 
                         <label for="phone">Teléfono</label>
                     </div>
                     <div class="input-field col s12 m6">
-                        <input id="password" type="password" class="validate" name="password" value=<% if (objFuncionario != null) {
+                        <input id="password" type="password" class="validate" name="password" required="true" value=<% if (objFuncionario != null) {
                                 out.println(objFuncionario.getContrasena());
                             } %>> 
                         <label for="password">Contraseña</label>
                     </div>
                     <div class="input-field col s12" style="text-align: -webkit-center;">
-                        <button class="btn waves-effect waves-light" type="submit"  value="Login" name="action">Registrarme
+                        <button class="btn waves-effect waves-light" type="submit"  value="Login" name="action">
+                            <% if (objFuncionario != null) {
+                                    out.println("Editar");
+                                } else {
+                                    out.println("Registrarme");
+                                } %>
                             <i class="material-icons right">person_add</i>
                         </button>
                     </div>
