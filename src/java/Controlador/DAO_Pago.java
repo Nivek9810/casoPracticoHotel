@@ -49,13 +49,24 @@ public class DAO_Pago {
         String consulta = "SELECT * FROM " + this.TABLE + " WHERE codigo_pago=" + codigo + ";";
         resultSet = statement.executeQuery(consulta);
         while (resultSet.next()) {
-            this.objPago = new DTO_Pago(resultSet.getInt("codigo_pago"),
-                    this.objDataReservacion.getReservation(resultSet.getInt("codigo_reservacion")),
-                    this.objDataFormaPago.getPaymentMethod(resultSet.getInt("codigo_forma_pago")),
-                    resultSet.getTimestamp("fecha_pago"),
-                    resultSet.getString("valor_de_pago"));
+            this.objPago = this.generateObject(resultSet);
         }
         return this.objPago;
+    }
+
+    public ArrayList<DTO_Pago> getUserPayments(String cedula) throws SQLException {
+        ArrayList<DTO_Pago> listUserPayments = new ArrayList<>();
+        String consulta = "SELECT P.* "
+                + "FROM PAGO AS P "
+                + "INNER JOIN RESERVACION AS R "
+                + "ON P.codigo_reservacion = R.codigo_reservacion "
+                + "WHERE R.cliente = '" + cedula + "';";
+        resultSet = statement.executeQuery(consulta);
+        while (resultSet.next()) {
+            //String value = resultSet.getString("valor");
+            listUserPayments.add(this.generateObject(resultSet));
+        }
+        return listUserPayments;
     }
 
     public boolean generatePayment(DTO_Pago payment) throws SQLException {
@@ -74,12 +85,17 @@ public class DAO_Pago {
         String consulta = "SELECT * FROM " + this.TABLE + " WHERE codigo_reservacion=" + codigo + ";";
         resultSet = statement.executeQuery(consulta);
         while (resultSet.next()) {
-            this.objPago = new DTO_Pago(resultSet.getInt("codigo_pago"),
-                    this.objDataReservacion.getReservation(resultSet.getInt("codigo_reservacion")),
-                    this.objDataFormaPago.getPaymentMethod(resultSet.getInt("codigo_forma_pago")),
-                    resultSet.getTimestamp("fecha_pago"),
-                    resultSet.getString("valor_de_pago"));
+            this.objPago = this.generateObject(resultSet);
         }
         return this.objPago;
+    }
+
+    private DTO_Pago generateObject(ResultSet resultSet) throws SQLException {
+        return new DTO_Pago(
+                resultSet.getInt("codigo_pago"),
+                this.objDataReservacion.getReservation(resultSet.getInt("codigo_reservacion")),
+                this.objDataFormaPago.getPaymentMethod(resultSet.getInt("codigo_forma_pago")),
+                resultSet.getTimestamp("fecha_pago"),
+                resultSet.getString("valor_de_pago"));
     }
 }

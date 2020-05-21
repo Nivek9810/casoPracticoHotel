@@ -53,3 +53,41 @@ body {
 }
 
 /** @END: Index CSS */
+
+/** @START: Home CSS*/
+.tab-checkIn {
+    margin-bottom: 5%;
+}
+
+.tab-checkIn > .tab > a,
+.tab-checkIn > .tab > a.active,
+.tab-hotels  > .tab > a,
+.tab-hotels > .tab > a.active{
+    color: cornflowerblue !important;
+    background-color: transparent !important;
+}
+.tab-checkIn > .indicator,
+.tab-hotels > .indicator{ 
+    background: cornflowerblue !important;
+}
+
+.btn {
+    background: cornflowerblue;
+    border-radius: 50px;
+}
+
+.btn:hover {
+    background: lightblue;
+}
+
+.calification-card { 
+    width: 50%;
+    margin: auto;
+}
+
+@media only screen and (min-width: 992px) {
+    .brand-logo {
+        margin: 0% 5%;
+    }
+}
+/** @END: Home CSS*/

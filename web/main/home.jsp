@@ -4,6 +4,10 @@
     Author     : user
 --%>
 
+<%@page import="Controlador.DAO_Calificacion"%>
+<%@page import="Modelo.DTO_Calificacion"%>
+<%@page import="Controlador.DAO_Pago"%>
+<%@page import="Modelo.DTO_Pago"%>
 <%@page import="Controlador.DAO_Tipo_habitacion"%>
 <%@page import="Modelo.DTO_Tipo_habitacion"%>
 <%@page import="Controlador.DAO_Hotel"%>
@@ -37,6 +41,8 @@
     ArrayList<DTO_Ciudad> listaCiudad = null;
     ArrayList<DTO_Hotel> listaHoteles = null;
     ArrayList<DTO_Tipo_habitacion> listaTipoHabitaciones = null;
+    ArrayList<DTO_Pago> listaReservasPagadas = null;
+    ArrayList<DTO_Calificacion> listaCalificaciones = null;
 
     ArrayList<DTO_Habitacion> listaHabitaciones = null;
     ArrayList<DTO_Forma_pago> listaMetodosDePago = null;
@@ -48,6 +54,7 @@
     if (rol != null) {
         DAO_Habitacion objDataHabitacion = new DAO_Habitacion(conexion);
         DAO_Reservacion objDataReservacion = new DAO_Reservacion(conexion);
+        DAO_Calificacion objDataCalificacion = new DAO_Calificacion(conexion);
 
         listaHabitaciones = objDataHabitacion.getAllRooms();
 
@@ -63,11 +70,15 @@
             listaCiudad = objDataCiudad.getAllPaymentMethods();
             listaHoteles = objDataHoteles.getAllHotels();
             listaTipoHabitaciones = objDataTipoHabitacion.getAllTypeRooms();
+            listaCalificaciones = objDataCalificacion.getAllReviews();
         } else {
             DAO_Forma_pago objDataMetodoPago = new DAO_Forma_pago(conexion);
+            DAO_Pago objDataPago = new DAO_Pago(conexion);
 
             listaReservaciones = objDataReservacion.getUserReservations(username.getCedula());
             listaMetodosDePago = objDataMetodoPago.getAllPaymentMethods();
+            listaReservasPagadas = objDataPago.getUserPayments(username.getCedula());
+            listaCalificaciones = objDataCalificacion.getUserReviews(username.getCedula());
         }
     }
 
@@ -91,43 +102,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Hola <% out.println(username.getNombre());%></title>
-        <style type="text/css">
-            .tab-checkIn {
-                margin-bottom: 5%;
-            }
-
-            .tab-checkIn > .tab > a,
-            .tab-checkIn > .tab > a.active,
-            .tab-hotels  > .tab > a,
-            .tab-hotels > .tab > a.active{
-                color: cornflowerblue !important;
-                background-color: transparent !important;
-            }
-            .tab-checkIn > .indicator,
-            .tab-hotels > .indicator{ 
-                background: cornflowerblue !important;
-            }
-
-            .btn {
-                background: cornflowerblue;
-                border-radius: 50px;
-            }
-
-            .btn:hover {
-                background: lightblue;
-            }
-
-            .card{ 
-                width: 50%;
-                margin: auto;
-            }
-
-            @media only screen and (min-width: 992px) {
-                .brand-logo {
-                    margin: 0% 5%;
-                }
-            }
-        </style>
     </head>
     <body>
         <nav class="nav-extended">
@@ -322,73 +296,97 @@
             <div id="ratings" class="col s12">
                 <section>
                     <h3>Calificaciones</h3>
-                    <div class="carousel carousel-slider">
-                        <div class="carousel-item" href="#one!">
-                            <div class="card blue-grey darken-1">
-                                <div class="card-content white-text">
-                                    <span class="card-title">Card Title</span>
-                                    <p>I am a very simple card. I am good at containing small bits of information.
-                                        I am convenient because I require little markup to use effectively.</p>
-                                </div>
-                                <div class="card-action">
-                                    <a href="#">This is a link</a>
-                                    <a href="#">This is a link</a>
-                                </div>
+                    <% if (listaReservasPagadas != null && !listaReservasPagadas.isEmpty()) { %>
+                    <div class="row">
+                        <form class="col s12 register-form" action="../Servlet_Calificacion" method="post">
+
+                            <div class="input-field col s8">
+                                <p class="range-field">
+                                    <b>Seleciona una de tus experiencias.</b>
+                                </p>
                             </div>
-                        </div>
-                        <div class="carousel-item" href="#two!">
-                            <div class="card blue-grey darken-1">
-                                <div class="card-content white-text">
-                                    <span class="card-title">Card Title</span>
-                                    <p>I am a very simple card. I am good at containing small bits of information.
-                                        I am convenient because I require little markup to use effectively.</p>
-                                </div>
-                                <div class="card-action">
-                                    <a href="#">This is a link</a>
-                                    <a href="#">This is a link</a>
-                                </div>
+                            <div class="input-field col s4">
+
+                                <select name="book">
+                                    <% for (DTO_Pago reservas : listaReservasPagadas) {%>
+                                    <option value=<% out.println(reservas.getCodigo_pago()); %>><% out.println(reservas.getReservacion().getHabitacion().getTipo().getNombre() + " - " + reservas.getReservacion().getHabitacion().getHotel().getNombre()); %></option>
+                                    <%}%>
+
+                                </select>
+                                <label>Selecciona un hotel</label>
+
                             </div>
-                        </div>
-                        <div class="carousel-item" href="#three!">
-                            <div class="card blue-grey darken-1">
-                                <div class="card-content white-text">
-                                    <span class="card-title">Card Title</span>
-                                    <p>I am a very simple card. I am good at containing small bits of information.
-                                        I am convenient because I require little markup to use effectively.</p>
-                                </div>
-                                <div class="card-action">
-                                    <a href="#">This is a link</a>
-                                    <a href="#">This is a link</a>
-                                </div>
+
+                            <div class="input-field col s8">
+                                <p class="range-field">
+                                    ¿Que tal te pareció el servicio de hotel?
+                                </p>
                             </div>
-                        </div>
-                        <div class="carousel-item" href="#four!">
-                            <div class="card blue-grey darken-1">
-                                <div class="card-content white-text">
-                                    <span class="card-title">Card Title</span>
-                                    <p>I am a very simple card. I am good at containing small bits of information.
-                                        I am convenient because I require little markup to use effectively.</p>
-                                </div>
-                                <div class="card-action">
-                                    <a href="#">This is a link</a>
-                                    <a href="#">This is a link</a>
-                                </div>
+                            <div class="input-field col s4">
+                                <p class="range-field">
+                                    <input type="range" name="ranking-hotel" min="1" max="5" />
+                                </p>
                             </div>
-                        </div>
-                        <div class="carousel-item" href="#five!">
-                            <div class="card blue-grey darken-1">
-                                <div class="card-content white-text">
-                                    <span class="card-title">Card Title</span>
-                                    <p>I am a very simple card. I am good at containing small bits of information.
-                                        I am convenient because I require little markup to use effectively.</p>
-                                </div>
-                                <div class="card-action">
-                                    <a href="#">This is a link</a>
-                                    <a href="#">This is a link</a>
-                                </div>
+                            <div class="input-field col s8">
+                                <p class="range-field">
+                                    ¿Que tal te pareció la sucursal donde está ubicado el hotel?
+                                </p>
                             </div>
-                        </div>
+                            <div class="input-field col s4">
+                                <p class="range-field">
+                                    <input type="range" name="ranking-sucursal" min="1" max="5" />
+                                </p>
+                            </div>
+                            <div class="input-field col s8">
+                                <p class="range-field">
+                                    ¿El tipo de habitación era realmente lo que esperabas?
+                                </p>
+                            </div>
+                            <div class="input-field col s4">
+                                <p class="range-field">
+                                    <input type="range" name="ranking-room" min="1" max="5" />
+                                </p>
+                            </div>
+                            <div class="input-field col s8">
+                                <p class="range-field">
+                                    ¿Cómo calificas la calidad del servicio?
+                                </p>
+                            </div>
+                            <div class="input-field col s4">
+                                <p class="range-field">
+                                    <input type="range" name="ranking-service" min="1" max="5" />
+                                </p>
+                            </div>
+                            <div class="input-field col s12" style="text-align: center;">
+                                <button class="btn waves-effect waves-light" type="submit" name="userId" >Enviar calificación
+                                    <i class="material-icons right">check</i>
+                                </button>
+                            </div>
+                        </form>
                     </div>
+                    <%}%>
+                    <% if (listaCalificaciones != null && !listaCalificaciones.isEmpty()) { %>
+                    <div class="carousel carousel-slider">
+                        <% for (int i = 0; i < listaCalificaciones.size(); i++) { %>
+                        <div class="carousel-item" href=<%out.println(i + 1);%>>
+                            <div class="card blue-grey darken-1 calification-card">
+                                <div class="card-content white-text">
+                                    <span class="card-title"><%out.println(listaCalificaciones.get(i).getPago().getReservacion().getCliente().getNombre());%></span>
+                                    <p>
+                                    <%out.println("<b>Hotel ("+listaCalificaciones.get(i).getPago().getReservacion().getHabitacion().getHotel().getNombre()+")</b>: "+listaCalificaciones.get(i).getHotel());%><br>
+                                    <%out.println("<b>Suite ("+listaCalificaciones.get(i).getPago().getReservacion().getHabitacion().getTipo().getNombre()+")</b>: "+listaCalificaciones.get(i).getTipo_habitacion());%><br>
+                                    <%out.println("<b>Sucursal </b>: "+listaCalificaciones.get(i).getSucursal());%><br>
+                                    <%out.println("<b>Valor final ("+listaCalificaciones.get(i).getPago().getValor_de_pago()+")</b>: "+listaCalificaciones.get(i).getCalidad_del_servicio());%>
+                                    </p>
+                                </div>
+                                <div class="card-action">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <%}%>
+                    </div>
+                    <%}%>
                 </section>
             </div>
             <!-- @USERS SECTION -->

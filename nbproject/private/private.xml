@@ -3,12 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/user/Documents/U.%20Distrital/Noveno%20Semestre/Daniels/casoPracticoHotel/src/java/Controlador/Servlet_Hotel.java</file>
-            <file>file:/C:/Users/user/Documents/U.%20Distrital/Noveno%20Semestre/Daniels/casoPracticoHotel/web/js/main.js</file>
-            <file>file:/C:/Users/user/Documents/U.%20Distrital/Noveno%20Semestre/Daniels/casoPracticoHotel/web/register/register.jsp</file>
+            <file>file:/C:/Users/user/Documents/U.%20Distrital/Noveno%20Semestre/Daniels/casoPracticoHotel/src/java/Controlador/DAO_Ciudad.java</file>
             <file>file:/C:/Users/user/Documents/U.%20Distrital/Noveno%20Semestre/Daniels/casoPracticoHotel/web/main/home.jsp</file>
-            <file>file:/C:/Users/user/Documents/U.%20Distrital/Noveno%20Semestre/Daniels/casoPracticoHotel/src/java/Controlador/Servlet_Register.java</file>
-            <file>file:/C:/Users/user/Documents/U.%20Distrital/Noveno%20Semestre/Daniels/casoPracticoHotel/web/index.jsp</file>
+            <file>file:/C:/Users/user/Documents/U.%20Distrital/Noveno%20Semestre/Daniels/casoPracticoHotel/src/java/Controlador/Servlet_Calificacion.java</file>
+            <file>file:/C:/Users/user/Documents/U.%20Distrital/Noveno%20Semestre/Daniels/casoPracticoHotel/src/java/Controlador/DAO_Calificacion.java</file>
             <file>file:/C:/Users/user/Documents/U.%20Distrital/Noveno%20Semestre/Daniels/casoPracticoHotel/src/java/Controlador/Servlet_CheckIn.java</file>
         </group>
     </open-files>

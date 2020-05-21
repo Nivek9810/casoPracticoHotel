@@ -24,6 +24,10 @@
         <servlet-name>Servlet_Habitacion</servlet-name>
         <servlet-class>Controlador.Servlet_Habitacion</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Servlet_Calificacion</servlet-name>
+        <servlet-class>Controlador.Servlet_Calificacion</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
         <url-pattern>/Login</url-pattern>
@@ -47,6 +51,10 @@
     <servlet-mapping>
         <servlet-name>Servlet_Habitacion</servlet-name>
         <url-pattern>/Servlet_Habitacion</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Servlet_Calificacion</servlet-name>
+        <url-pattern>/Servlet_Calificacion</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
