@@ -7,11 +7,13 @@ package Controlador;
 
 import Modelo.Conexion;
 import Modelo.DTO_Pago;
+import Modelo.DVO_Cost;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -84,25 +86,29 @@ public class Servlet_CheckOut extends HttpServlet {
 
                 DAO_Pago objDataPago = new DAO_Pago(conexion);
                 DAO_Reservacion objDataReservacion = new DAO_Reservacion(conexion);
-                DAO_Forma_pago objDataMetodoPago = new DAO_Forma_pago(conexion);
 
-                String total_a_pagar = "";
+                /**
+                 * Get total amount
+                 */
+                DVO_Cost amount = objDataReservacion.getRoomCost(code_reservation);
+                String total_a_pagar = "" + (amount.getValor_a_pagar() - amount.getValor_de_pago());
 
                 /**
                  * Validate user state
                  */
-                DTO_Pago objUserPayment = objDataPago.checkUserPayment(code_reservation);
-                if (objUserPayment != null) {
-                    request.setAttribute("userPayment", objUserPayment);
+                ArrayList<DTO_Pago> objUserPayments = objDataPago.checkUserPayment(code_reservation);
+                if (amount.getValor_de_pago() >= amount.getValor_a_pagar() || objUserPayments.size() > 1) {
+                    request.setAttribute("userPayment", objUserPayments);
                     RequestDispatcher req = request.getRequestDispatcher("main/bill.jsp");
                     req.forward(request, response);
                 } else {
                     /**
                      * Generate payment
                      */
+
                     objDataPago.generatePayment(new DTO_Pago(0,
                             objDataReservacion.getReservation(code_reservation),
-                            objDataMetodoPago.getPaymentMethod(code_reservation),
+                            objUserPayments.get(0).getForma_pago(),
                             new Timestamp(System.currentTimeMillis()),
                             total_a_pagar));
                     response.sendRedirect("main/home.jsp");

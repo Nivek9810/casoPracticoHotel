@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 $(document).ready(function () {
     $('.carousel').carousel({
-        dist: -250
+        dist: -250,
+        indicators: true
     });
 });

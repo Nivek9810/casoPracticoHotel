@@ -79,15 +79,23 @@ public class DAO_Pago {
         return !statement.execute(consulta);
     }
 
-    public DTO_Pago checkUserPayment(int codigo) throws SQLException {
-        this.objPago = null;
+    public boolean updatePayment(int code_payment, String payment) throws SQLException {
+        String consulta = "UPDATE " + this.TABLE + " "
+                + "SET valor_de_pago = '" + payment + "' "
+                + "WHERE codigo_pago = " + code_payment + ";";
+        int response = statement.executeUpdate(consulta);
+        return response == 1;
+    }
+
+    public ArrayList<DTO_Pago> checkUserPayment(int codigo) throws SQLException {
+        ArrayList listPayments = new ArrayList();
 
         String consulta = "SELECT * FROM " + this.TABLE + " WHERE codigo_reservacion=" + codigo + ";";
         resultSet = statement.executeQuery(consulta);
         while (resultSet.next()) {
-            this.objPago = this.generateObject(resultSet);
+            listPayments.add(this.generateObject(resultSet));
         }
-        return this.objPago;
+        return listPayments;
     }
 
     private DTO_Pago generateObject(ResultSet resultSet) throws SQLException {

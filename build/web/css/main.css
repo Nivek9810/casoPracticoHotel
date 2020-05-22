@@ -67,7 +67,7 @@ body {
     background-color: transparent !important;
 }
 .tab-checkIn > .indicator,
-.tab-hotels > .indicator{ 
+.tab-hotels > .indicator { 
     background: cornflowerblue !important;
 }
 
@@ -76,8 +76,13 @@ body {
     border-radius: 50px;
 }
 
-.btn:hover {
+.btn:hover,
+.carousel > .indicators > .indicator-item{
     background: lightblue;
+}
+
+.carousel > .indicators > .indicator-item.active {
+    background: #546e7a;
 }
 
 .calification-card { 

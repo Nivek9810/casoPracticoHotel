@@ -7,6 +7,7 @@ package Controlador;
 
 import Modelo.Conexion;
 import Modelo.DTO_Reservacion;
+import Modelo.DVO_Cost;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -106,6 +107,28 @@ public class DAO_Reservacion {
             }
         }
         return reservacion_id;
+    }
+
+    public DVO_Cost getRoomCost(int reservation_code) throws SQLException {
+        String consulta = "SELECT (H.valor::numeric * extract('days' from age(R.fecha_salida, R.fecha_ingreso) )) as valor_a_pagar, "
+                + "SUM (P.valor_de_pago::numeric) as valor_de_pago "
+                + "FROM " + this.TABLE + " AS R "
+                + "INNER JOIN HABITACION H "
+                + "ON R.codigo_habitacion = H.codigo_habitacion "
+                + "INNER JOIN PAGO AS P "
+                + "ON P.codigo_reservacion = R.codigo_reservacion "
+                + "WHERE R.codigo_reservacion = " + reservation_code + ""
+                + "GROUP BY 1;";
+        ResultSet resultSetCost = statement.executeQuery(consulta);
+        double amount = 0;
+        double paid = 0;
+        
+        while (resultSetCost.next()) {
+            amount = resultSetCost.getDouble("valor_a_pagar");
+            paid = resultSetCost.getDouble("valor_de_pago");
+        }
+        
+        return new DVO_Cost(amount, paid);
     }
 
 }

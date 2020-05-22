@@ -117,8 +117,10 @@
                     <li class="tab"><a class="active" href="#checkIn">Check in</a></li>
                     <li class="tab"><a href="#checkOut">Check out</a></li>
                     <li class="tab"><a href="#ratings">Calificaciones</a></li>
+                        <% if (rol.getCodigo_rol() == 1) {%>
                     <li class="tab"><a href="#users">Clientes</a></li>
                     <li class="tab"><a href="#hotels">Hoteles</a></li>
+                        <%}%>
                 </ul>
             </div>
         </nav>
@@ -154,9 +156,6 @@
                                     <b>Tipo:</b> <% out.println(reservacon.getHabitacion().getTipo().getNombre());%> <br>
                                     <b>Valor:</b> <% out.println(reservacon.getHabitacion().getValor());%>
                                 </p>
-
-                                <a href="#!" class="secondary-content"><i class="material-icons">business_center</i></a>
-
                             </li>
                             <% }
                             } else {%>
@@ -190,7 +189,7 @@
                                         <select name="habitacion">
                                             <option value="0" disabled selected>Selecciona una habitación</option>
                                             <% for (DTO_Habitacion habitacion : listaHabitaciones) {%>
-                                            <option value=<% out.println(habitacion.getCodigo_habitacion()); %>><% out.println(habitacion.getTipo().getNombre()); %></option>
+                                            <option value=<% out.println(habitacion.getCodigo_habitacion()); %>><% out.println(habitacion.getTipo().getNombre() + " (" + habitacion.getHotel().getNombre() + " - " + habitacion.getValor() + ")"); %></option>
                                             <%}%>
                                         </select>
                                         <label>Selecciona una habitación</label>
@@ -373,14 +372,14 @@
                                 <div class="card-content white-text">
                                     <span class="card-title"><%out.println(listaCalificaciones.get(i).getPago().getReservacion().getCliente().getNombre());%></span>
                                     <p>
-                                    <%out.println("<b>Hotel ("+listaCalificaciones.get(i).getPago().getReservacion().getHabitacion().getHotel().getNombre()+")</b>: "+listaCalificaciones.get(i).getHotel());%><br>
-                                    <%out.println("<b>Suite ("+listaCalificaciones.get(i).getPago().getReservacion().getHabitacion().getTipo().getNombre()+")</b>: "+listaCalificaciones.get(i).getTipo_habitacion());%><br>
-                                    <%out.println("<b>Sucursal </b>: "+listaCalificaciones.get(i).getSucursal());%><br>
-                                    <%out.println("<b>Valor final ("+listaCalificaciones.get(i).getPago().getValor_de_pago()+")</b>: "+listaCalificaciones.get(i).getCalidad_del_servicio());%>
+                                        <%out.println("<b>Hotel (" + listaCalificaciones.get(i).getPago().getReservacion().getHabitacion().getHotel().getNombre() + ")</b>: " + listaCalificaciones.get(i).getHotel());%><br>
+                                        <%out.println("<b>Suite (" + listaCalificaciones.get(i).getPago().getReservacion().getHabitacion().getTipo().getNombre() + ")</b>: " + listaCalificaciones.get(i).getTipo_habitacion());%><br>
+                                        <%out.println("<b>Sucursal </b>: " + listaCalificaciones.get(i).getSucursal());%><br>
+                                        <%out.println("<b>Valor final (" + listaCalificaciones.get(i).getPago().getValor_de_pago() + ")</b>: " + listaCalificaciones.get(i).getCalidad_del_servicio());%>
                                     </p>
                                 </div>
                                 <div class="card-action">
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -389,6 +388,7 @@
                     <%}%>
                 </section>
             </div>
+            <%if (rol.getCodigo_rol() == 1) {%>
             <!-- @USERS SECTION -->
             <div id="users" class="col s12">
                 <section>
@@ -582,6 +582,7 @@
                 </section>
 
             </div>
+            <%}%>
         </div>        
 
         <footer class="page-footer">
@@ -599,7 +600,7 @@
             <div class="footer-copyright">
                 <div class="container">
                     © 2020 Universidad unipau
-                    <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+                    <a class="grey-text text-lighten-4 right" href="#!">Más links</a>
                 </div>
             </div>
         </footer>

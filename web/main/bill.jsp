@@ -4,13 +4,14 @@
     Author     : user
 --%>
 
+<%@page import="java.util.ArrayList"%>
 <%@page import="Tools.MoneyChange"%>
 <%@page import="Modelo.DTO_Pago"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <%
-        DTO_Pago objPago = (DTO_Pago) request.getAttribute("userPayment");
+        ArrayList<DTO_Pago> payments = (ArrayList<DTO_Pago>) request.getAttribute("userPayment");
         MoneyChange objMoney = new MoneyChange();
     %>
     <head>
@@ -43,7 +44,7 @@
         <div class="container">
             <div class="row">
                 <div class="col s12 m6">
-                    <h3>Hola <strong><% out.println(objPago.getReservacion().getCliente().getNombre());%></strong>, aqui te presentamos a detalle tu factura.</h3>
+                    <h3>Hola <strong><% out.println(payments.get(0).getReservacion().getCliente().getNombre());%></strong>, aqui te presentamos a detalle tu factura.</h3>
                 </div>
                 <div class="col s12 m6">
                     <div class="card blue-grey darken-1">
@@ -53,43 +54,49 @@
                                 <li class="collection-item avatar">
                                     <i class="material-icons circle">business</i>
                                     <span class="title">Hotel:</span>
-                                    <p><% out.println(objPago.getReservacion().getHabitacion().getHotel().getNombre());%></p>
+                                    <p><% out.println(payments.get(0).getReservacion().getHabitacion().getHotel().getNombre());%></p>
                                 </li>
                                 <li class="collection-item avatar">
                                     <i class="material-icons circle">hotel</i>
                                     <span class="title">Habitación:</span>
-                                    <p><% out.println(objPago.getReservacion().getHabitacion().getTipo().getNombre());%>
+                                    <p><% out.println(payments.get(0).getReservacion().getHabitacion().getTipo().getNombre());%>
                                     </p>
                                 </li>
                                 <li class="collection-item avatar">
                                     <i class="material-icons circle green">attach_money</i>
                                     <span class="title">Valor: </span>
-                                    <p><% out.println(objPago.getReservacion().getHabitacion().getValor());%>
+                                    <p><% out.println(payments.get(0).getReservacion().getHabitacion().getValor());%>
                                     </p>
                                 </li>
                                 <li class="collection-item avatar">
                                     <i class="material-icons circle red">event_available</i>
                                     <span class="title">Fecha ingreso: </span>
-                                    <p><% out.println(objPago.getReservacion().getFecha_ingreso());%>
+                                    <p><% out.println(payments.get(0).getReservacion().getFecha_ingreso());%>
                                     </p>
                                 </li>
                                 <li class="collection-item avatar">
                                     <i class="material-icons circle red">event</i>
                                     <span class="title">Fecha salida: </span>
-                                    <p><% out.println(objPago.getReservacion().getFecha_salida());%>
+                                    <p><% out.println(payments.get(0).getReservacion().getFecha_salida());%>
                                     </p>
                                 </li>
                                 <li class="collection-item avatar">
                                     <i class="material-icons circle red">style</i>
                                     <span class="title">Medio de pago : </span>
-                                    <p><% out.println(objPago.getForma_pago().getNombre());%>
+                                    <p><% out.println(payments.get(0).getForma_pago().getNombre());%>
                                     </p>
-                                 </li>
+                                </li>
                                 <li class="collection-item avatar">
                                     <i class="material-icons circle red">credit_card</i>
-                                    <span class="title">Valor a pagar : </span>
-                                    <p><% out.println(objMoney.getAmoung(objPago.getReservacion().getHabitacion().getValor()) - objMoney.getAmoung(objPago.getValor_de_pago()));%>
-                                    </p>
+                                    <span class="title">Pagos realizados: </span>
+                                    <ul><% for (DTO_Pago payment : payments) {%>
+                                        <li>
+                                            <p>
+                                                <%out.println(payment.getValor_de_pago());%>
+                                            </p>    
+                                        </li>
+                                        <%}%>
+                                    </ul>
                                 </li>
                             </ul>
                         </div>
